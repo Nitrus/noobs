@@ -38,6 +38,12 @@
 
 void reboot_to_extended(const QString &defaultPartition, bool setDisplayMode)
 {
+	
+    if (QFile::exists(USB_MOUNTPOINT))
+    {
+        QProcess::execute("umount -r " USB_MOUNTPOINT);
+    }
+	
 #ifdef Q_WS_QWS
     QWSServer::setBackground(Qt::white);
     QWSServer::setCursorVisible(true);
