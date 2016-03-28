@@ -1,4 +1,5 @@
 # NOOBS (New Out of Box Software)
+##### Updated with changes from https://github.com/headissue/noobs/tree/usb-os-install-pi2
 #### An easy Operating System installer for the Raspberry Pi
 
 NOOBS is designed to make it easy to select and install operating systems for the Raspberry Pi without having to worry about manually imaging your SD card.
@@ -130,6 +131,36 @@ The following steps allow you to create a modified copy of one of the standard O
   1. To create the root tarball you will need to run `tar -cvpf <label>.tar /* --exclude=proc/* --exclude=sys/* --exclude=dev/pts/*` from within the root filesystem of your custom OS version. You should then compress the resulting tarball with `xz -9 -e <label>.tar`.
   2. To create the boot tarball you will need to run `tar -cvpf <label>.tar .` at the root directory of the boot partition of your custom OS version. You should then compress the resulting tarball with `xz -9 -e <label>.tar`.
 
+### How to install a custom OS from USB
+
+Before proceeding with the custom OS install you will need to consider the following:
+- If you've rebuilt NOOBS yourself, you will need to get the /output folder contents and place them on a clean, FAT formatted SD card.
+- If you've downloaded one of the archive releases, you will need to place the contents of the archive on a clean, FAT formatted SD card.
+
+After you have the necessary files on the SD card, you can remove or move the 'os' folder on a USB drive.  
+Examples for custom OS folder structure and configuration can be found on:  
+http://downloads.raspberrypi.org/
+
+The structure should end up looking like this:  
+```
+root-of-usb
+└ os
+  ├ CustomOS1
+  | ├ Any marketing tarballs, or slide images or other files you might want to add
+  | ├ boot.tar.gz        (Or whatever you decide to call it)
+  | ├ root.tar.gz        (Or whatever you decide to call it)
+  | ├ partition_setup.sh (This can be taken from the downloads webpage, or you can write it yourself)
+  | ├ os.json            (Easiest way is to get this is to duplicate an existing one and change it to your needs)
+  | └ partitions.json    (Make sure that this is properly configured with your OS name and compressed tarball names)
+  └ CustomOS2
+    ├ Any marketing tarballs, or slide images or other files you might want to add
+    ├ boot.tar.gz
+    ├ root.tar.gz
+    ├ partition_setup.sh
+    ├ os.json
+    └ partitions.json
+```
+
 ### How to change the default Language, Keyboard layout, Display mode or Boot Partition
 
 Edit the `recovery.cmdline` file in the root NOOBS directory and append the following arguments where relevant:
@@ -204,13 +235,21 @@ If you don't have a keyboard, you can still change the display mode used by NOOB
 
 ## How to Rebuild NOOBS
 
-Note that this will require a minimum of 6GB free disk space.
+Note that this will require a minimum of ~~6GB~~ 8GB free disk space.
 
 #### Get Build Dependencies
 
 On Ubuntu:
 
 `sudo apt-get install build-essential rsync texinfo libncurses-dev whois unzip`
+
+If you don't have it already, you will need lupdate as well:
+
+`sudo apt-get install qt4-linguist-tools`
+
+If lupdate doesn't work by itself, you will also need:
+
+`sudo apt-get install libqt4-dev`
 
 #### Run Build Script
 
